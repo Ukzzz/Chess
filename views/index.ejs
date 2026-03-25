@@ -3,98 +3,205 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %></title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
+    <title><%= title %> - Modern Chess Experience</title>
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              primary: '#6366f1',
+              'primary-dark': '#4f46e5',
+              'board-light': '#f3f4f6',
+              'board-dark': '#4b5563',
+            }
+          }
+        }
+      }
+    </script>
     <style>
       .chessboard {
         display: grid;
         grid-template-columns: repeat(8, 1fr);
         grid-template-rows: repeat(8, 1fr);
-        width: 600px; /* fixed width */
-        height: 600px; /* same height → perfect square */
-        border: 6px solid #222;
-        border-radius: 12px;
+        width: min(85vw, 600px);
+        height: min(85vw, 600px);
+        border: 4px solid #111;
+        border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-        background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
       }
 
       .square {
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 2.4rem;
-        font-weight: bold;
         user-select: none;
+        transition: all 0.2s ease;
       }
 
-      .light {
-        background: #f5ecd9; /* beige */
+      .square.light {
+        background-color: #ebecd0;
       }
 
-      .dark {
-        background: #975a24; /* dark wood */
+      .square.dark {
+        background-color: #779556;
       }
 
-      .square:hover {
-        filter: brightness(1.08);
-        transform: scale(1.03);
-        z-index: 1;
+      .square.highlight {
+        box-shadow: inset 0 0 0 4px rgba(255, 255, 0, 0.4);
       }
 
       .piece {
         cursor: grab;
-        transition: transform 0.2s ease;
+        width: 85%;
+        height: 85%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.1s ease;
       }
 
       .piece:active {
         cursor: grabbing;
-        transform: scale(1.15);
+        transform: scale(1.1);
       }
 
-      .chessboard.flipped {
+      .flipped {
         transform: rotate(180deg);
       }
 
-      .chessboard.flipped .square {
+      .flipped .square {
         transform: rotate(180deg);
       }
-      /* ✅ Optional: highlight squares for moves */
-      .square.highlight {
-        box-shadow: inset 0 0 0 3px #ffd700;
-        background: radial-gradient(
-          circle,
-          rgba(255, 215, 0, 0.35) 30%,
-          transparent 70%
-        );
-      }
 
-      /* ✅ Optional: illegal move flash */
-      .square.illegal {
-        animation: flash 0.5s alternate 2;
-      }
+      /* Transitions */
+      .fade-enter { opacity: 0; transform: translateY(10px); }
+      .fade-enter-active { opacity: 1; transform: translateY(0); transition: all 0.3s ease; }
 
-      @keyframes flash {
-        from {
-          background-color: #ff4d4d;
-        }
-        to {
-          background-color: inherit;
-        }
-      }
+      /* Scrollbar */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: #52525b; }
     </style>
   </head>
-  <body>
-    <div class="w-full h-screen flex items-center justify-center bg-zinc-900">
-      <div class="chessboard w-96 h-96"></div>
+  <body class="bg-[#121212] text-zinc-100 min-h-screen font-sans selection:bg-primary selection:text-white">
+    <!-- Navbar / Header -->
+    <header class="h-16 border-b border-white/10 flex items-center px-8 bg-[#18181b]/80 backdrop-blur-md sticky top-0 z-50">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-primary rounded shadow-lg shadow-primary/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L9 7H15L12 2Z"/><path d="M19 19V21H5V19L7 17H17L19 19Z"/><path d="M17 17L15 9H9L7 17H17Z"/></svg>
+        </div>
+        <h1 class="text-xl font-bold tracking-tight">Grandmaster <span class="text-primary">Chess</span></h1>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 lg:py-12 flex flex-col lg:flex-row gap-8 items-start justify-center">
+      <!-- Game Section -->
+      <section class="flex-1 flex flex-col items-center gap-6">
+        <!-- Board Container -->
+        <div class="relative group">
+          <div class="chessboard border-8 border-neutral-800 bg-neutral-800"></div>
+          
+          <!-- Role Indicator -->
+          <div id="role-badge" class="absolute -top-3 -right-3 px-3 py-1 bg-primary text-xs font-bold rounded-full shadow-lg hidden">
+            YOU ARE WHITE
+          </div>
+        </div>
+
+        <!-- Player Info (Mobile context) -->
+        <div class="w-full max-w-[600px] flex justify-between items-center px-2 py-4 border-t border-white/5 lg:hidden">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
+               <span class="text-sm font-bold">W</span>
+            </div>
+            <span id="p1-name" class="font-medium">Waiting...</span>
+          </div>
+          <div class="text-xl font-mono" id="mobile-timer">00:00</div>
+          <div class="flex items-center gap-2">
+            <span id="p2-name" class="font-medium text-zinc-400">Waiting...</span>
+            <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
+                <span class="text-sm font-bold text-zinc-400">B</span>
+             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sidebar / Info Section -->
+      <aside class="w-full lg:w-96 flex flex-col gap-6">
+        <!-- Room Control Card -->
+        <div class="bg-[#18181b] p-6 rounded-2xl border border-white/5 shadow-xl">
+          <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            Game Session
+          </h2>
+          <div class="space-y-4">
+            <div id="room-info" class="hidden">
+                <p class="text-sm text-zinc-400 mb-1">Room ID</p>
+                <div class="flex items-center gap-2 bg-black/30 p-2 rounded-lg border border-white/5">
+                    <code id="display-room-id" class="text-primary font-bold tracking-wider">ROOM-123</code>
+                    <button id="copy-room-btn" class="ml-auto p-1 hover:text-primary transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="join-controls" class="space-y-3">
+                <input type="text" id="room-input" placeholder="Enter Room ID..." class="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all">
+                <button id="join-btn" class="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-primary/20 active:scale-95">
+                    Join / Create Room
+                </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Game Status Card -->
+        <div id="status-card" class="bg-[#18181b] p-6 rounded-2xl border border-white/5 shadow-xl flex-1 flex flex-col">
+          <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Game Status
+          </h2>
+          <div id="game-status-text" class="text-zinc-400 text-sm mb-6">
+            Connecting to server...
+          </div>
+          
+          <div class="mt-auto space-y-4">
+            <div id="turn-indicator" class="flex items-center justify-between bg-zinc-900/50 p-3 rounded-lg border border-white/5">
+                <span class="text-sm font-medium">Turn</span>
+                <span id="turn-badge" class="px-2 py-1 bg-zinc-800 text-[10px] font-bold rounded uppercase tracking-widest">–</span>
+            </div>
+            <button id="reset-btn" class="hidden w-full border border-white/10 hover:bg-white/5 text-sm font-semibold py-2 rounded-lg transition-colors">
+                Request Rematch
+            </button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Modal Overlay -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden">
+        <div class="bg-[#18181b] border border-white/10 w-full max-w-sm rounded-3xl p-8 text-center shadow-2xl scale-95 transition-transform duration-300" id="modal-content">
+            <div id="modal-icon" class="w-16 h-16 bg-primary/10 text-primary rounded-full mx-auto flex items-center justify-center mb-6 text-3xl font-bold">
+                !
+            </div>
+            <h3 id="modal-title" class="text-2xl font-bold mb-2">Checkmate!</h3>
+            <p id="modal-description" class="text-zinc-400 text-base mb-8">White has won the game.</p>
+            <button id="modal-close" class="w-full bg-zinc-100 text-black font-bold py-3 rounded-2xl hover:bg-white transition-colors">
+                Close
+            </button>
+        </div>
     </div>
 
-    <script
-      src="https://cdn.socket.io/4.8.1/socket.io.min.js"
-      integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
-      crossorigin="anonymous"
-    ></script>
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
     <script src="../chessGame.js"></script>
   </body>

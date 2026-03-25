@@ -1,92 +1,57 @@
-# Online Multiplayer Chess Game
+# Grandmaster Chess - Multiplayer Online
 
-A real-time, multiplayer chess game built with Node.js, Express, and Socket.IO. Play chess with friends in private rooms with a clean, responsive interface.
+A professional, real-time multiplayer chess game built with Node.js, Express, and Socket.IO. Experience a clean, modern interface with professional SVG pieces and seamless gameplay.
 
-## Features
+![Chess Preview](https://via.placeholder.com/800x450.png?text=Grandmaster+Chess+Modern+UI)
 
-- 🎮 Real-time multiplayer gameplay
-- 🔒 Private game rooms
-- ♟️ Full chess rules implementation using chess.js
-- 🎨 Responsive design with smooth animations
-- 👥 Support for spectators
-- 🔄 Automatic board flipping for black player
-- 📱 Mobile-friendly interface
+## ✨ New Features in Redesign
 
-## Tech Stack
+- **💎 Premium UI/UX**: Completely redesigned interface with a modern dark theme and Inter typography.
+- **♟️ Professional SVG Pieces**: High-quality, crisp piece designs (Wikipedia standard) for better visibility.
+- **📍 Smart Room Management**: Sidebar-based room controls with easy "Join / Create" flow.
+- **📱 Responsive Layout**: Fully optimized for mobile, tablet, and desktop viewing.
+- **⚡ Real-time Feedback**: Live turn indicators, connection status, and custom game-over modals.
+- **📋 Copy Room ID**: Quick-share functionality for inviting friends.
+
+## 🚀 Tech Stack
 
 - **Backend**: Node.js, Express
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Real-time Communication**: Socket.IO
-- **Chess Logic**: chess.js
-- **Styling**: Tailwind CSS
+- **Real-time**: Socket.IO
+- **Logic**: Chess.js
+- **Frontend**: Tailwind CSS, Vanilla JavaScript
+- **Typography**: Google Fonts (Inter)
 
-## Prerequisites
+## 🛠️ Installation & Setup
 
-- Node.js (v14 or higher)
-- npm (comes with Node.js)
-
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd chess-game
-   ```
-
-2. Install dependencies:
+1. **Clone & Install**:
    ```bash
    npm install
    ```
 
-3. Start the development server:
+2. **Environment**:
+   Create a `.env` file:
+   ```env
+   PORT=3000
+   ```
+
+3. **Run Server**:
    ```bash
    npm start
    ```
 
-4. Open your browser and navigate to:
-   ```
-   http://localhost:3000
-   ```
+4. **Play**:
+   Navigate to `http://localhost:3000`
 
-## How to Play
+## 🎮 How to Play
 
-1. Open the application in your browser
-2. Enter a room ID (share this with a friend to play together)
-3. The first player to join will be White, the second will be Black
-4. Drag and drop pieces to make moves
-5. Spectators can watch the game by joining the same room
+1. **Enter Room**: Type a room name and click "Join / Create".
+2. **Invite Friends**: Copy the Room ID from the sidebar and share it.
+3. **Gameplay**: Drag and drop pieces to move. The board automatically flips if you are playing as Black.
+4. **Game Over**: Watch for the custom checkmate/draw alerts!
 
-## Project Structure
-
-```
-chess-game/
-├── public/           # Static files
-│   └── chessGame.js  # Client-side JavaScript
-├── views/
-│   └── index.ejs     # Main HTML template
-├── app.js           # Express server and Socket.IO setup
-├── package.json     # Project dependencies
-└── README.md        # This file
-```
-
-## Environment Variables
-
-Create a `.env` file in the root directory with the following variable:
-
-```
-PORT=3000
-```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
+## 📜 License
 
 This project is licensed under the ISC License.
 
-## Acknowledgements
-
-- [chess.js](https://github.com/jhlywa/chess.js) - Chess logic library
-- [Socket.IO](https://socket.io/) - Real-time bidirectional event-based communication
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+---
+*Built with ❤️ for the Chess Community.*
