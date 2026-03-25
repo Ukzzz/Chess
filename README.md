@@ -2,8 +2,6 @@
 
 A professional, real-time multiplayer chess game built with Node.js, Express, and Socket.IO. Experience a clean, modern interface with professional SVG pieces and seamless gameplay.
 
-![Chess Preview](https://via.placeholder.com/800x450.png?text=Grandmaster+Chess+Modern+UI)
-
 ## ✨ New Features in Redesign
 
 - **💎 Premium UI/UX**: Completely redesigned interface with a modern dark theme and Inter typography.
